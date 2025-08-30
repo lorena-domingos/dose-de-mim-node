@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/lorena-domingos/dose-de-mim-node#readme",
   "dependencies": {
+    "better-sqlite3": "^12.2.0",
     "epxress": "^0.0.1-security",
     "express": "^5.1.0"
   },

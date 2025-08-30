@@ -1,0 +1,11 @@
+.content {
+    display: none;
+}
+
+.content.active {
+    display: block;
+}
+
+h3 {
+    cursor: pointer;
+}

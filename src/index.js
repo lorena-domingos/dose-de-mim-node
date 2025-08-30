@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 const diarioRoutes = require('./routes/diario.routes');
+const path = require('node:path');
 
+app.use(express.urlencoded({ extended: true }));
 const myLogger = function (req, res, next) {
   console.log('LOGGED')
   next()
@@ -10,9 +12,7 @@ const myLogger = function (req, res, next) {
 
 app.use(myLogger)
 
-app.get('/', (req, res) => {
-    res.send({message: 'Página Inicial!'})
-});
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(diarioRoutes);
 
