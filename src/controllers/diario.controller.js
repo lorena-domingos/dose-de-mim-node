@@ -33,7 +33,28 @@ const createEntry = (req, res) => {
     }
 };
 
+const deleteEntry = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const query = "DELETE FROM diario WHERE id = ?";
+    const stmt = db.prepare(query);
+    const deletarDiario = stmt.run(id);
+
+    if (deletarDiario.changes > 0) {
+      res.status(200).json({ message: "Entrada apagada com sucesso!" });
+    }
+    else {
+      res.status(404).json({ message: 'Erro ao apagar entrada do diário.' });
+    }
+  } catch (error) {
+    console.log("Erro ao encontrar a id do diário.");
+    res.status(500).json({ menssage: "Erro ao solicitar id no diário" });
+  }
+};
+
 module.exports = {
   getAllEntries,
-  createEntry
+  createEntry,
+  deleteEntry
 };
