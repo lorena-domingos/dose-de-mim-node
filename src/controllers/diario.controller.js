@@ -48,13 +48,64 @@ const deleteEntry = (req, res) => {
       res.status(404).json({ message: 'Erro ao apagar entrada do diário.' });
     }
   } catch (error) {
-    console.log("Erro ao encontrar a id do diário.");
+    console.log("Erro ao encontrar a id do diário.", error);
     res.status(500).json({ menssage: "Erro ao solicitar id no diário" });
+  }
+};
+
+const getAnEntry = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const query = "SELECT title, content FROM diario WHERE id = ?";
+    const stmt = db.prepare(query);
+    const pegarDados = stmt.get(id);
+
+    if (pegarDados) {
+      res.status(200).json({
+        message: 'Valor encontrado!',
+        data: pegarDados
+      });
+    }
+  } catch (error) {
+    console.log('Falha ao encontrar o diário.', error);
+    res.status(500).json({
+      message: 'Falha ao encontrar os dados;'
+    });
+  }
+};
+
+const editEntry = (req, res) => {
+  try {
+    const {title, content} = req.body;
+    const { id } = req.params;
+
+     const diaryId = parseInt(id, 10);
+    if (isNaN(diaryId)) {
+        return res.status(400).json({ message: 'ID de diário inválido.' });
+    }
+
+    const query = "UPDATE diario SET title = ?, content = ? WHERE id = ?";
+    const stmt = db.prepare(query);
+    const editarEntrada = stmt.run(title, content, diaryId);
+
+    if (editarEntrada) {
+      res.status(200).json({
+        message: 'Entrada editada com sucesso!'
+      })
+    }
+  } catch (error) {
+    console.log('Falha ao editar a entrada.', error);
+    res.status(500).json({
+      message: 'Falha ao encontrar a entrada'
+    });
   }
 };
 
 module.exports = {
   getAllEntries,
   createEntry,
-  deleteEntry
+  deleteEntry,
+  getAnEntry,
+  editEntry
 };

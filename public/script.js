@@ -14,6 +14,7 @@ async function loadEntries() {
           <div>
           <h3 onclick=showItem(this)>${entry.title}</h3>
           <button onclick=deleteItem(${entry.id})>Deletar</button>
+          <button onclick=getAnItem(${entry.id})>Editar</button>
           </div>
           
           <p class="content">${entry.content}</p>
@@ -48,6 +49,56 @@ async function deleteItem(id) {
         } else {
             console.log("Erro ao deletar a entrada.");
         }
+    }
+};
+
+// Criando a rota mais sozinha que nunca T=T #Editar
+
+function fillInput(data) {
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+
+    titleInput.value = data.title;
+    contentInput.value = data.content;
+}
+
+async function getAnItem(id) {
+    const getItem = await fetch(`/diario/${id}`);
+
+    const content = await getItem.json();
+
+    if (content.data) {
+        fillInput(content.data);
+        document.getElementById('diaryId').value = id;
+    }
+
+    console.log(content);
+}
+
+// Salvar sem tratamento algum, deixaremos bonito depois
+
+async function salvarItem() {
+    const id = document.getElementById('diaryId').value;
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+
+    const editItem = await fetch (`/diario/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: titleInput.value,
+            content: contentInput.value
+        })
+    });
+
+    if (editItem.ok) {
+        console.log('Entrada editada com sucesso!');
+        document.getElementById('diaryId').value = '';
+        titleInput.value = '';
+        contentInput.value = '';
+        loadEntries();
     }
 };
 
